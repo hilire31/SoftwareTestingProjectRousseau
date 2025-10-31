@@ -356,9 +356,6 @@ public class Main {
 - **Abstract Factory** provides an elegant way to handle object creation for systems that need to support multiple families of related products, like cross-platform UI elements.
 - **Builder** is highly effective for constructing complex objects with many optional parameters or configuration steps.
 
-
-Here's the improved and well-stylized version of your markdown:
-
 ---
 
 ## Exercises:
