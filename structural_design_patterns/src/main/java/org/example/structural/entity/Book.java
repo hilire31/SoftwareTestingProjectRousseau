@@ -7,15 +7,12 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
-import org.example.structural.service.BookDecorator;
-
 
 @Entity
 @Data
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @AllArgsConstructor
-public class Book implements BookDecorator {
+public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -24,7 +21,7 @@ public class Book implements BookDecorator {
     String author;
     double price;
 
-    // TODO: Implement description and price methods
+    // TODO: Implement description method
     public String getDescription() {
         return title + " by " + author;
     }
