@@ -29,6 +29,14 @@ public class BookService {
         return bookRepository.findAll();
     }
 
+    public List<Book> getBooksByTheme(String theme) {
+        return bookRepository.findByTheme(theme);
+    }
+
+    public List<Book> getBooksByAuthor(String author) {
+        return bookRepository.findByAuthor(author);
+    }
+
     public Book getBookById(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new org.example.structural.exceptions.ResourceNotFoundException("Book not found with id: " + id));

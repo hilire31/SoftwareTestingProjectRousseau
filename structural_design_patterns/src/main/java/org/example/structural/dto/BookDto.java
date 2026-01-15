@@ -7,6 +7,7 @@ public class BookDto {
     private String title;
     private String author;
     private double price;
+    private String theme;
 
     // Explicit getters and setters to avoid relying on Lombok at build time
     public String getTitle() {
@@ -31,5 +32,13 @@ public class BookDto {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 }

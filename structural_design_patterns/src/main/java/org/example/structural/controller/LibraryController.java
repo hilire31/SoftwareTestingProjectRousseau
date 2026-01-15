@@ -33,6 +33,24 @@ public class LibraryController {
                 .collect(Collectors.toList());
     }
 
+    @Operation(summary = "Get books by theme", description = "Retrieve all books that match the given theme")
+    @GetMapping("/theme/{theme}")
+    public List<BookDto> getBooksByTheme(@PathVariable String theme) {
+        return bookService.getBooksByTheme(theme)
+                .stream()
+                .map(BookMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Operation(summary = "Get books by author", description = "Retrieve all books written by the given author")
+    @GetMapping("/author/{author}")
+    public List<BookDto> getBooksByAuthor(@PathVariable String author) {
+        return bookService.getBooksByAuthor(author)
+                .stream()
+                .map(BookMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
     @Operation(summary = "Get a book by ID", description = "Provide an ID to lookup a specific book in the library")
     @GetMapping("/{id}")
     public BookDto getBookById(@ApiParam("ID of the book to retrieve") @PathVariable Long id) {

@@ -15,6 +15,7 @@ public class Book {
     private String title;
     private String author;
     private double price;
+    private String theme;
 
     // Constructeur sans argument (obligatoire pour JPA)
     public Book() {
@@ -26,6 +27,14 @@ public class Book {
         this.title = title;
         this.author = author;
         this.price = price;
+    }
+
+    public Book(Long id, String title, String author, double price, String theme) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.price = price;
+        this.theme = theme;
     }
 
     // Méthode métier
@@ -64,5 +73,13 @@ public class Book {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 }
