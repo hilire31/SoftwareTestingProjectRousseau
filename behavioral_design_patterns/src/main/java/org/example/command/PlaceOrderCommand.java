@@ -12,7 +12,8 @@ public class PlaceOrderCommand implements OrderCommand {
 
     @Override
     public void execute() {
-        // TODO: Implement order placement logic
+        // Update order status and perform placement logic
+        order.updateStatus("PLACED");
         System.out.println("Order placed successfully: " + order.getId());
     }
 }

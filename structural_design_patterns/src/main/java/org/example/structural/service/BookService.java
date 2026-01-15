@@ -14,13 +14,40 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
-    // TODO: Implement methods for CRUD operations
+    // Constructor for easier testing and explicit wiring
+    public BookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
+    // Default constructor for frameworks
+    public BookService() {
+    }
+
+    // CRUD operations
 
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
 
+    public Book getBookById(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new org.example.structural.exceptions.ResourceNotFoundException("Book not found with id: " + id));
+    }
+
     public Book addBook(Book book) {
         return bookRepository.save(book);
+    }
+
+    public Book updateBook(Long id, Book updated) {
+        Book existing = getBookById(id);
+        existing.setTitle(updated.getTitle());
+        existing.setAuthor(updated.getAuthor());
+        existing.setPrice(updated.getPrice());
+        return bookRepository.save(existing);
+    }
+
+    public void deleteBook(Long id) {
+        Book existing = getBookById(id);
+        bookRepository.delete(existing);
     }
 }

@@ -36,8 +36,8 @@ public class LibraryController {
     @Operation(summary = "Get a book by ID", description = "Provide an ID to lookup a specific book in the library")
     @GetMapping("/{id}")
     public BookDto getBookById(@ApiParam("ID of the book to retrieve") @PathVariable Long id) {
-        //TODO
-        return new BookDto();
+        Book book = bookService.getBookById(id);
+        return BookMapper.toDTO(book);
     }
 
     @Operation(summary = "Add a new book", description = "Adds a new book to the library and returns the saved BookDto object")
@@ -53,13 +53,14 @@ public class LibraryController {
     public BookDto updateBook(
             @ApiParam("ID of the book to update") @PathVariable Long id,
             @ApiParam( "Updated BookDto object") @RequestBody BookDto updatedBookDto) {
-        //TODO
-        return BookMapper.toDTO(new Book());
+        Book updated = BookMapper.toEntity(updatedBookDto);
+        Book saved = bookService.updateBook(id, updated);
+        return BookMapper.toDTO(saved);
     }
 
     @Operation(summary = "Delete a book by ID", description = "Deletes the book with the specified ID from the library")
     @DeleteMapping("/{id}")
     public void deleteBook(@ApiParam("ID of the book to delete") @PathVariable Long id) {
-    //TODO
+        bookService.deleteBook(id);
     }
 }

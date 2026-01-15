@@ -8,14 +8,30 @@ import java.util.List;
 @Component
 public class LibraryFacade {
 
-    // TODO: Use BookService and other services to simplify the interaction with multiple subsystems
+    private final BookService bookService;
 
+    public LibraryFacade(BookService bookService) {
+        this.bookService = bookService;
+    }
+
+    // Use BookService to simplify interactions
     public void addBook(Book book) {
-        // TODO: Add book to the library through service layer
+        bookService.addBook(book);
     }
 
     public List<Book> getFeaturedBooks() {
-        // TODO: Return a list of featured books using the decorator pattern
-        return null;
+        // Return the top 3 most expensive books as 'featured'
+        return bookService.getAllBooks()
+                .stream()
+                .sorted((b1, b2) -> Double.compare(b2.getPrice(), b1.getPrice()))
+                .limit(3)
+                .toList();
+    }
+
+    // Return decorators for featured books (example usage of Decorator pattern)
+    public List<FeaturedBookDecorator> getFeaturedBookDecorators() {
+        return getFeaturedBooks().stream()
+                .map(FeaturedBookDecorator::new)
+                .toList();
     }
 }

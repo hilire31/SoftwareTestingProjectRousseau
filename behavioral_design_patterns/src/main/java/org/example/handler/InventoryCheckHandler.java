@@ -6,7 +6,10 @@ import org.example.Order;
 public class InventoryCheckHandler extends OrderValidationHandler {
     @Override
     public void validate(Order order) {
-        // TODO: Check if items are in stock
+        // Basic inventory check: we don't have item details, so simulate success
+        if (order.getTotalAmount() < 0) {
+            throw new IllegalStateException("Invalid order total amount");
+        }
         System.out.println("Inventory check passed.");
         super.validate(order);
     }
