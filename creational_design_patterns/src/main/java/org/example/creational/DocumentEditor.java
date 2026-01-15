@@ -15,7 +15,7 @@ public class DocumentEditor {
         DocumentEditor editor = new DocumentEditor();
 
         // Test opening, displaying and saving different document types
-        editor.openDocument("PDF", "PDF: Invoice #123");
+        editor.openDocument("PDF", "PDF: Invoice1");
         editor.openDocument("Word", "Word: Meeting notes");
         editor.openDocument("HTML", "<h1>Hello World</h1>");
     }

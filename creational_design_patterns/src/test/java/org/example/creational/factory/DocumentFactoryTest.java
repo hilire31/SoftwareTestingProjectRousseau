@@ -7,28 +7,43 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DocumentFactoryTest {
 
     @Test
-    public void createPdfDocument() {
-        Document d = DocumentFactory.createDocument("PDF");
-        assertNotNull(d);
-        assertTrue(d instanceof PDFDocument);
+    public void testCreatePDFDocument() {
+        Document doc = DocumentFactory.createDocument("PDF");
+        assertNotNull(doc);
+        assertEquals(PDFDocument.class, doc.getClass());
+        assertDoesNotThrow(() -> {
+            doc.open();
+            doc.display();
+            doc.save("Test PDF content");
+        });
     }
 
     @Test
-    public void createWordDocument() {
-        Document d = DocumentFactory.createDocument("Word");
-        assertNotNull(d);
-        assertTrue(d instanceof WordDocument);
+    public void testCreateWordDocument() {
+        Document doc = DocumentFactory.createDocument("Word");
+        assertNotNull(doc);
+        assertEquals(WordDocument.class, doc.getClass());
+        assertDoesNotThrow(() -> {
+            doc.open();
+            doc.display();
+            doc.save("Test Word content");
+        });
     }
 
     @Test
-    public void createHtmlDocument() {
-        Document d = DocumentFactory.createDocument("HTML");
-        assertNotNull(d);
-        assertTrue(d instanceof HTMLDocument);
+    public void testCreateHTMLDocument() {
+        Document doc = DocumentFactory.createDocument("HTML");
+        assertNotNull(doc);
+        assertEquals(HTMLDocument.class, doc.getClass());
+        assertDoesNotThrow(() -> {
+            doc.open();
+            doc.display();
+            doc.save("<p>Test HTML</p>");
+        });
     }
 
     @Test
-    public void createUnknownThrows() {
+    public void testUnknownTypeThrows() {
         assertThrows(IllegalArgumentException.class, () -> DocumentFactory.createDocument("TXT"));
     }
 }
