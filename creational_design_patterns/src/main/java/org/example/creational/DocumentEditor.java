@@ -4,18 +4,19 @@ import org.example.creational.factory.Document;
 import org.example.creational.factory.DocumentFactory;
 
 public class DocumentEditor {
-
-    public void openDocument(String type) {
+    public void openDocument(String type, String content) {
         Document doc = DocumentFactory.createDocument(type);
         doc.open();
+        doc.display();
+        doc.save(content);
     }
 
     public static void main(String[] args) {
         DocumentEditor editor = new DocumentEditor();
 
-        // TODO: Test opening different types of documents (PDF, Word, HTML)
-        editor.openDocument("PDF");
-        editor.openDocument("Word");
-        editor.openDocument("HTML");
+        // Test opening, displaying and saving different document types
+        editor.openDocument("PDF", "PDF: Invoice #123");
+        editor.openDocument("Word", "Word: Meeting notes");
+        editor.openDocument("HTML", "<h1>Hello World</h1>");
     }
 }
