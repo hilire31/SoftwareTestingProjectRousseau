@@ -7,11 +7,11 @@ public class Order {
     private String status;
     private double totalAmount;
 
-    // Constructeur sans argument
+    
     public Order() {
     }
 
-    // Constructeur utilisé par les tests
+    
     public Order(Long id, String customerName, String status, double totalAmount) {
         this.id = id;
         this.customerName = customerName;
