@@ -14,6 +14,8 @@ public class BookMapper {
         dto.setAuthor(book.getAuthor());
         dto.setPrice(book.getPrice());
         dto.setTheme(book.getTheme());
+        dto.setOwnerId(book.getOwnerId());
+        dto.setForSale(book.isForSale());
         return dto;
     }
 
@@ -25,6 +27,8 @@ public class BookMapper {
         book.setAuthor(dto.getAuthor());
         book.setPrice(dto.getPrice());
         book.setTheme(dto.getTheme());
+        book.setOwnerId(dto.getOwnerId());
+        book.setForSale(dto.isForSale());
         return book;
     }
 }

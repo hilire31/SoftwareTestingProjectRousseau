@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import '../../data/models/book_dto.dart';
 import '../../data/services/book_api_service.dart';
+import '../../../../core/session/app_session.dart';
 import 'book_form_page.dart';
 
 class BookListPage extends StatefulWidget {
@@ -89,7 +90,10 @@ class _BookListPageState extends State<BookListPage> {
   }
 
   List<BookDto> _applyFilters(List<BookDto> books) {
-    var filtered = books;
+    final userId = AppSession.currentUserId;
+    var filtered = books
+        .where((b) => b.ownerId != null && b.ownerId == userId)
+        .toList(growable: false);
     if (_selectedTheme != 'All') {
       filtered =
           filtered.where((b) => b.theme == _selectedTheme).toList(growable: false);
@@ -103,6 +107,24 @@ class _BookListPageState extends State<BookListPage> {
           .toList(growable: false);
     }
     return filtered;
+  }
+
+  Future<void> _sellBook(BookDto book) async {
+    final userId = AppSession.currentUserId;
+    if (userId == null || book.id == null) return;
+    try {
+      await _service.sellBook(book.id!, userId);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Book is now for sale.')),
+      );
+      _refresh();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to put book for sale.')),
+      );
+    }
   }
 
   @override
@@ -134,13 +156,17 @@ class _BookListPageState extends State<BookListPage> {
             );
           }
           final books = snapshot.data ?? const <BookDto>[];
+          final userId = AppSession.currentUserId;
+          final ownBooks = books
+              .where((b) => b.ownerId != null && b.ownerId == userId)
+              .toList(growable: false);
           final themes = <String>{
             'All',
-            ...books.map((b) => b.theme),
+            ...ownBooks.map((b) => b.theme),
           }.toList(growable: false);
 
           final filtered = _applyFilters(books);
-          if (books.isEmpty) {
+          if (ownBooks.isEmpty) {
             return _EmptyState(onRetry: _refresh);
           }
 
@@ -163,7 +189,7 @@ class _BookListPageState extends State<BookListPage> {
                 const SizedBox(height: 12),
                 _SummaryRow(
                   count: filtered.length,
-                  total: books.length,
+                  total: ownBooks.length,
                   accent: theme.colorScheme.primary,
                 ),
                 const SizedBox(height: 8),
@@ -171,6 +197,7 @@ class _BookListPageState extends State<BookListPage> {
                   (book) => _BookCard(
                     book: book,
                     onDelete: () => _confirmDelete(context, book),
+                    onSell: book.forSale ? null : () => _sellBook(book),
                   ),
                 ),
               ],
@@ -182,8 +209,10 @@ class _BookListPageState extends State<BookListPage> {
         icon: const Icon(Icons.add),
         label: const Text('Add Book'),
         onPressed: () async {
+          final userId = AppSession.currentUserId;
+          if (userId == null) return;
           final added = await Navigator.of(context).push<bool>(
-            MaterialPageRoute(builder: (_) => const BookFormPage()),
+            MaterialPageRoute(builder: (_) => BookFormPage(ownerId: userId)),
           );
           if (added == true) {
             _refresh();
@@ -286,10 +315,15 @@ class _SummaryRow extends StatelessWidget {
 }
 
 class _BookCard extends StatelessWidget {
-  const _BookCard({required this.book, required this.onDelete});
+  const _BookCard({
+    required this.book,
+    required this.onDelete,
+    required this.onSell,
+  });
 
   final BookDto book;
   final VoidCallback onDelete;
+  final VoidCallback? onSell;
 
   @override
   Widget build(BuildContext context) {
@@ -311,6 +345,17 @@ class _BookCard extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
             const SizedBox(width: 8),
+            if (book.forSale)
+              const Text(
+                'For sale',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              )
+            else
+              TextButton(
+                onPressed: onSell,
+                child: const Text('Mettre en vente'),
+              ),
+            const SizedBox(width: 4),
             IconButton(
               icon: const Icon(Icons.delete_outline),
               onPressed: onDelete,

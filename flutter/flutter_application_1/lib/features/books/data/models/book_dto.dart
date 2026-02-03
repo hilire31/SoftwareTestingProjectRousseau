@@ -6,6 +6,8 @@ class BookDto {
   final String author;
   final String theme;
   final double price;
+  final int? ownerId;
+  final bool forSale;
 
   BookDto({
     this.id,
@@ -13,6 +15,8 @@ class BookDto {
     required this.author,
     required this.theme,
     required this.price,
+    this.ownerId,
+    this.forSale = false,
   });
 
   factory BookDto.fromJson(Map<String, dynamic> json) {
@@ -22,6 +26,8 @@ class BookDto {
       author: json['author'],
       theme: json['theme'],
       price: json['price'].toDouble(),
+      ownerId: json['ownerId'],
+      forSale: json['forSale'] ?? false,
     );
   }
 
@@ -32,6 +38,8 @@ class BookDto {
       'author': author,
       'theme': theme,
       'price': price,
+      'ownerId': ownerId,
+      'forSale': forSale,
     };
   }
 }

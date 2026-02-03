@@ -2,6 +2,8 @@ package org.example.structural.controller;
 
 import io.swagger.annotations.ApiParam;
 import org.example.structural.dto.BookDto;
+import org.example.structural.dto.BuyRequestDto;
+import org.example.structural.dto.SellRequestDto;
 import org.example.structural.entity.Book;
 import org.example.structural.utils.BookMapper;
 import org.example.structural.service.BookService;
@@ -80,5 +82,28 @@ public class LibraryController {
     @DeleteMapping("/{id}")
     public void deleteBook(@ApiParam("ID of the book to delete") @PathVariable Long id) {
         bookService.deleteBook(id);
+    }
+
+    @Operation(summary = "Get books for sale", description = "Returns books that are for sale and not owned by the given user")
+    @GetMapping("/for-sale")
+    public List<BookDto> getBooksForSale(@RequestParam Long excludeOwnerId) {
+        return bookService.getBooksForSaleExcludingOwner(excludeOwnerId)
+                .stream()
+                .map(BookMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Operation(summary = "Set a book for sale", description = "Marks a book as for sale by its owner")
+    @PutMapping("/{id}/sell")
+    public BookDto sellBook(@PathVariable Long id, @RequestBody SellRequestDto request) {
+        Book saved = bookService.setForSale(id, request.getOwnerId());
+        return BookMapper.toDTO(saved);
+    }
+
+    @Operation(summary = "Buy a book", description = "Transfers ownership and removes from sale")
+    @PostMapping("/{id}/buy")
+    public BookDto buyBook(@PathVariable Long id, @RequestBody BuyRequestDto request) {
+        Book saved = bookService.buyBook(id, request.getBuyerId());
+        return BookMapper.toDTO(saved);
     }
 }

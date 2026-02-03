@@ -58,6 +58,37 @@ class BookApiService {
     }
   }
 
+  Future<List<BookDto>> getBooksForSale(int excludeOwnerId) async {
+    final res = await http.get(
+      Uri.parse("$baseUrl/for-sale?excludeOwnerId=$excludeOwnerId"),
+    );
+    return _decodeList(res);
+  }
+
+  Future<BookDto> sellBook(int id, int ownerId) async {
+    final res = await http.put(
+      Uri.parse("$baseUrl/$id/sell"),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'ownerId': ownerId, 'forSale': true}),
+    );
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      throw Exception('Sell failed: ${res.statusCode}');
+    }
+    return BookDto.fromJson(jsonDecode(res.body));
+  }
+
+  Future<BookDto> buyBook(int id, int buyerId) async {
+    final res = await http.post(
+      Uri.parse("$baseUrl/$id/buy"),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'buyerId': buyerId}),
+    );
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      throw Exception('Buy failed: ${res.statusCode}');
+    }
+    return BookDto.fromJson(jsonDecode(res.body));
+  }
+
   List<BookDto> _decodeList(http.Response res) {
     final List data = jsonDecode(res.body);
     return data.map((e) => BookDto.fromJson(e)).toList();

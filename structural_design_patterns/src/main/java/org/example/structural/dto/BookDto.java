@@ -9,6 +9,8 @@ public class BookDto {
     private String author;
     private double price;
     private String theme;
+    private Long ownerId;
+    private boolean forSale;
 
     // Explicit getters and setters to avoid relying on Lombok at build time
     public Long getId() {
@@ -49,5 +51,21 @@ public class BookDto {
 
     public void setTheme(String theme) {
         this.theme = theme;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public boolean isForSale() {
+        return forSale;
+    }
+
+    public void setForSale(boolean forSale) {
+        this.forSale = forSale;
     }
 }

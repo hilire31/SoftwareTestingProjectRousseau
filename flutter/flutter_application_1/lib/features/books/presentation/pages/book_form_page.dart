@@ -5,7 +5,9 @@ import '../../data/models/book_dto.dart';
 import '../../data/services/book_api_service.dart';
 
 class BookFormPage extends StatefulWidget {
-  const BookFormPage({super.key});
+  const BookFormPage({super.key, required this.ownerId});
+
+  final int ownerId;
 
   @override
   State<BookFormPage> createState() => _BookFormPageState();
@@ -40,6 +42,8 @@ class _BookFormPageState extends State<BookFormPage> {
         author: _authorCtrl.text.trim(),
         theme: _themeCtrl.text.trim(),
         price: price,
+        ownerId: widget.ownerId,
+        forSale: false,
       );
       await _service.addBook(book);
       if (mounted) Navigator.of(context).pop(true);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'features/books/presentation/pages/book_list_page.dart';
+import 'features/auth/presentation/pages/auth_page.dart';
 
 
 void main() {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Library',
-      home: BookListPage(),
+      home: const AuthPage(),
     );
   }
 }
