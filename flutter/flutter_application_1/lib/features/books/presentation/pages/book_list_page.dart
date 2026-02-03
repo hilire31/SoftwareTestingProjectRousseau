@@ -39,6 +39,55 @@ class _BookListPageState extends State<BookListPage> {
     await _future;
   }
 
+  Future<void> _confirmDelete(BuildContext context, BookDto book) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete book'),
+          content: Text('Delete "${book.title}" by ${book.author}?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true) {
+      await _deleteBook(book);
+    }
+  }
+
+  Future<void> _deleteBook(BookDto book) async {
+    if (book.id == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Cannot delete: missing book id.')),
+      );
+      return;
+    }
+    try {
+      await _service.deleteBook(book.id!);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Book deleted.')),
+      );
+      _refresh();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to delete book.')),
+      );
+    }
+  }
+
   List<BookDto> _applyFilters(List<BookDto> books) {
     var filtered = books;
     if (_selectedTheme != 'All') {
@@ -118,7 +167,12 @@ class _BookListPageState extends State<BookListPage> {
                   accent: theme.colorScheme.primary,
                 ),
                 const SizedBox(height: 8),
-                ...filtered.map((book) => _BookCard(book: book)),
+                ...filtered.map(
+                  (book) => _BookCard(
+                    book: book,
+                    onDelete: () => _confirmDelete(context, book),
+                  ),
+                ),
               ],
             ),
           );
@@ -232,9 +286,10 @@ class _SummaryRow extends StatelessWidget {
 }
 
 class _BookCard extends StatelessWidget {
-  const _BookCard({required this.book});
+  const _BookCard({required this.book, required this.onDelete});
 
   final BookDto book;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -248,9 +303,23 @@ class _BookCard extends StatelessWidget {
         ),
         title: Text(book.title),
         subtitle: Text('${book.author} - ${book.theme}'),
-        trailing: Text(
-          '${book.price.toStringAsFixed(2)} EUR',
-          style: const TextStyle(fontWeight: FontWeight.w600),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '${book.price.toStringAsFixed(2)} EUR',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(width: 8),
+            IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: onDelete,
+              tooltip: 'Delete',
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints.tightFor(width: 32, height: 32),
+              visualDensity: VisualDensity.compact,
+            ),
+          ],
         ),
         onTap: () {
           // navigation vers details

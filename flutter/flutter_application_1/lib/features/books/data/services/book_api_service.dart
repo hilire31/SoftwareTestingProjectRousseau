@@ -52,7 +52,10 @@ class BookApiService {
   }
 
   Future<void> deleteBook(int id) async {
-    await http.delete(Uri.parse("$baseUrl/$id"));
+    final res = await http.delete(Uri.parse("$baseUrl/$id"));
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      throw Exception('Delete failed: ${res.statusCode}');
+    }
   }
 
   List<BookDto> _decodeList(http.Response res) {
