@@ -1,11 +1,17 @@
 // lib/features/books/data/services/book_api_service.dart
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../models/book_dto.dart';
 
 class BookApiService {
-  final String baseUrl = "http://10.0.2.2:8080/api/books";
+  String get baseUrl {
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      return "http://localhost:8080/api/books";
+    }
+    return "http://10.0.2.2:8080/api/books";
+  }
 
   Future<List<BookDto>> getAllBooks() async {
     final res = await http.get(Uri.parse(baseUrl));
