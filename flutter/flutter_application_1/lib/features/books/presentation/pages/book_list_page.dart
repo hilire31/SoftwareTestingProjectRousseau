@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../data/models/book_dto.dart';
 import '../../data/services/book_api_service.dart';
 import '../../../../core/session/app_session.dart';
+import '../../../auth/presentation/pages/auth_page.dart';
 import 'book_form_page.dart';
 
 class BookListPage extends StatefulWidget {
@@ -140,6 +141,18 @@ class _BookListPageState extends State<BookListPage> {
             icon: const Icon(Icons.refresh),
             onPressed: _refresh,
             tooltip: 'Refresh',
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              AppSession.currentUserId = null;
+              AppSession.currentEmail = null;
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const AuthPage()),
+                (route) => false,
+              );
+            },
+            tooltip: 'Logout',
           ),
         ],
       ),
